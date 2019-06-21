@@ -7,7 +7,7 @@ from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
 
 from rubber_ducky.src import create_app, db
-from rubber_ducky.src.models import user, black_list
+from rubber_ducky.src.models import user, black_list, answer, question
 
 from rubber_ducky import user_api
 
