@@ -4,7 +4,7 @@ from flask_restplus import Resource
 
 from ..utils.question_dto import QuestionDto, QuestionCreate, QuestionDetail, QuestionUpdate
 from ..utils.decorator import Authenticate
-from ..services import question_service, answer_service
+from ..services import question_service, answer_service, user_service
 
 api = QuestionDto.api
 question = QuestionDto.question
@@ -44,10 +44,11 @@ class Question(Resource):
 
     @api.doc('update question')
     @api.expect(question_update, validate=True)
+    @api.marshal_with(question_detail)
     @Authenticate
     def put(self, question_id):
         data = request.json
-        user_id = g.user.get('owner_id')
+        user_id = user_service.get_a_user(g.user.get('owner_id')).public_id
         question = question_service.get_question_by_id(question_id)
         if not question:
             api.abort(404)
@@ -58,7 +59,8 @@ class Question(Resource):
     @api.doc('delete question by ID')
     @Authenticate
     def delete(self, question_id):
-        if g.user.get('owner_id') != question_service.get_question_by_id(question_id).owner_id:
+        user_id = user_service.get_a_user(g.user.get('owner_id')).public_id
+        if user_id != question_service.get_question_by_id(question_id).owner_id:
             api.abort(401)
         return question_service.delete_question(question_id)
 

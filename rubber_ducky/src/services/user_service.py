@@ -35,6 +35,10 @@ def get_a_user(id):
     return User.query.filter_by(id=id).first()
 
 
+def get_user_by_public_id(public_id):
+    return User.query.filter_by(public_id=public_id).first()
+
+
 def get_user_by_name(username):
     return User.query.filter_by(username=username).first()
 

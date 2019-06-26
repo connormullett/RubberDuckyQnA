@@ -1,23 +1,28 @@
 
+
 from datetime import datetime
 
 from flask import g
 
 from rubber_ducky.src import db
 from rubber_ducky.src.models import user, question, answer
+from rubber_ducky.src.services import user_service
+
 
 
 def create_question(data):
 
+    user = user_service.get_a_user(g.user.get('owner_id'))
+
     new_question = question.Question(
         title=data['title'],
         question=data['question'],
-        owner_id=g.user.get('owner_id'),
+        owner_id=user.public_id,
         created_at=datetime.utcnow()
     )
 
     save_changes(new_question)
-    return None, 201
+    return {'status': 'created'}, 201
 
 
 def get_all_questions():
@@ -33,23 +38,23 @@ def get_questions_by_original_poster_id(owner_id):
 
 
 def update_question(question_id, data):
-    question = question.Question.query.filter_by(id=question_id).first()
+    q = question.Question.query.filter_by(id=question_id).first()
     for key, item in data.items():
-        setattr(question, key, item)
+        setattr(q, key, item)
     db.session.commit()
-    return question.Question.query.filter_by(id=question_id)
+    return question.Question.query.filter_by(id=question_id).first()
 
 
 def delete_question(id):
-    question = question.Question.query.filter_by(id=id).first()
-    db.session.delete(question)
+    q = question.Question.query.filter_by(id=id).first()
+    db.session.delete(q)
     db.session.commit()
     return None, 204
 
 
 def mark_question_best_answer(question_id, answer_id):
-    question = question.Question.query.filter_by(id=question_id).first()
-    question.best_answer = answer_id
+    q = question.Question.query.filter_by(id=question_id).first()
+    q.best_answer = answer_id
     db.session.commit()
     return {'status': 'question updated successfully'}
 
