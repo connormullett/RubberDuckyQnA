@@ -74,8 +74,9 @@ class QuestionAdjustment(Resource):
 
     @api.doc('change questions best_answer property to answer_id')
     @Authenticate
-    def post(question_id, answer_id):
-        if g.user.get('owner_id') != question_service.get_question_by_id(question_id).owner_id:
+    def post(self, question_id, answer_id):
+        user = user_service.get_a_user(g.user.get('owner_id')).public_id
+        if user != question_service.get_question_by_id(question_id).owner_id:
             api.abort(401)
         if not answer_service.get_answer_by_id(answer_id):
             api.abort(404)
