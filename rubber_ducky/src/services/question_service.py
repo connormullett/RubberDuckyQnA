@@ -6,14 +6,16 @@ from flask import g
 
 from rubber_ducky.src import db
 from rubber_ducky.src.models import user, question, answer
-from rubber_ducky.src.services import user_service
-
+from rubber_ducky.src.services import user_service, question_service
 
 
 def create_question(data):
 
     user = user_service.get_a_user(g.user.get('owner_id'))
 
+    if not user:
+        return {'status': 'user not found'}, 400
+    
     new_question = question.Question(
         title=data['title'],
         question=data['question'],

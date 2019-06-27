@@ -15,4 +15,3 @@ class Question(db.Model):
     best_answer = db.Column(db.Integer, db.ForeignKey('answers.id'))
     created_at = db.Column(db.DateTime, nullable=False)
     modified_at = db.Column(db.DateTime)
-    answers = db.relationship('Answer', backref='questions', cascade='all, delete', lazy=True)

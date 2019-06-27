@@ -57,7 +57,7 @@ class UserMe(Resource):
         return user_service.delete_user(user_id)
 
 
-@api.route('/<username>')
+@api.route('/by_name/<username>')
 @api.param('username', 'users unique name')
 @api.response(404, 'user not found')
 class UserByName(Resource):
@@ -68,4 +68,19 @@ class UserByName(Resource):
         return user_service.get_user_by_name(username)
 
 
-# TODO: get user by public ID
+@api.route('/by_public_id/<public_id>')
+@api.param('public_id', 'users public ID')
+@api.response(404, 'user not found')
+class UserByPublicId(Resource):
+
+    @api.doc('get user by public id')
+    @api.marshal_with(user_detail)
+    def get(self, public_id):
+
+        # TODO: marshal function to prevent null JSON
+
+        response = user_service.get_user_by_public_id(public_id)
+        print(response)
+        if not response:
+            return {'status': 'user not found'}, 404
+        return response

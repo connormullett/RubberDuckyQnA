@@ -5,7 +5,36 @@ from flask import g
 
 from rubber_ducky.src import db
 from rubber_ducky.src.models import user, question, answer
+from rubber_ducky.src.services import user_service, question_service
+
+
+def create_answer(data):
+
+    user = user_service.get_a_user(g.user.get('owner_id'))
+    q = question_service.get_question_by_id(data['question_id'])
+
+    if not q:
+        return {'status': 'question does not exist'}, 400
+
+    new_answer = answer.Answer(
+        owner_id=user.public_id,
+        created_at=datetime.utcnow(),
+        content=data['content'],
+        question_id=data['question_id']
+    )
+    save_changes(new_answer)
+    return {'status': 'created'}
+
 
 
 def get_answer_by_id(answer_id):
     return answer.Answer.query.filter_by(id=answer_id).first()
+
+
+def get_all_answers():
+    return answer.Answer.query.all()
+
+
+def save_changes(data):
+    db.session.add(data)
+    db.session.commit()
