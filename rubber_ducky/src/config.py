@@ -25,7 +25,7 @@ class Testing(Config):
 
 class Production(Config):
     DEBUG = False
-
+    SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
 
 app_config = dict(
     development=Development,
