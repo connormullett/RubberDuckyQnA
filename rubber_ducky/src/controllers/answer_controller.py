@@ -63,3 +63,21 @@ class Answer(Resource):
         if user_id != answer.owner_id:
             api.abort(401)
         return answer_service.delete_answer(answer_id)
+
+
+@api.route('/by_question/<question_id>')
+@api.param('question_id', 'id of the question to search answers for')
+@api.response(404, 'question not found')
+class AnswerByQuestion(Resource):
+
+    @api.doc('get questions by id')
+    @api.marshal_list_with(answer)
+    @Authenticate
+    def get(self, question_id):
+
+        question = question_service.get_question_by_id(question_id)
+
+        if not question:
+            api.abort(404)
+        
+        return answer_service.get_answers_by_question_id(question_id)

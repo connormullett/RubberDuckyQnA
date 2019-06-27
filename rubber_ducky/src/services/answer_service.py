@@ -27,7 +27,7 @@ def create_answer(data):
 
 
 def get_answers_by_question_id(question_id):
-    return answer.Answer.filter_by(question_id=question_id).all()
+    return answer.Answer.query.filter_by(question_id=question_id).all()
 
 
 def get_answer_by_id(answer_id):
