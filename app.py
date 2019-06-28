@@ -10,4 +10,5 @@ application.register_blueprint(user_api)
 
 application.app_context().push()
 
-application.run()
+if __name__ == '__main__':
+    application.run()
