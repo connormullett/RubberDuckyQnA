@@ -13,6 +13,9 @@ user_detail = UserDetailDto.user
 user_update = UserUpdateDto.user
 user_me = UserMe.user
 
+parser = api.parser()
+parser.add_argument('Authorization', location='headers')
+
 
 @api.route('/')
 class UserList(Resource):
@@ -26,6 +29,7 @@ class UserList(Resource):
 
     @api.doc('get all users')
     @api.marshal_list_with(user)
+    @api.expect(parser)
     @Authenticate
     def get(self):
         return user_service.get_all_users()
@@ -33,6 +37,7 @@ class UserList(Resource):
 
 @api.route('/me')
 @api.response(401, 'unauthorized')
+@api.expect(parser)
 class UserMe(Resource):
 
     @api.doc('update users account')
