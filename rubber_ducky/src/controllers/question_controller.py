@@ -6,6 +6,8 @@ from ..utils.question_dto import QuestionDto, QuestionCreate, QuestionDetail, Qu
 from ..utils.decorator import Authenticate
 from ..services import question_service, answer_service, user_service
 
+from .user_controller import parser
+
 api = QuestionDto.api
 question = QuestionDto.question
 question_create = QuestionCreate.question
@@ -19,6 +21,7 @@ class QuestionList(Resource):
     @api.response(201, 'Question Created')
     @api.doc('create question')
     @api.expect(question_create, validate=True)
+    @api.expect(parser)
     @Authenticate
     def post(self):
         data = request.json
@@ -44,6 +47,7 @@ class Question(Resource):
 
     @api.doc('update question')
     @api.expect(question_update, validate=True)
+    @api.expect(parser)
     @api.marshal_with(question_detail)
     @Authenticate
     def put(self, question_id):
@@ -57,6 +61,7 @@ class Question(Resource):
         return question_service.update_question(question_id, data)
     
     @api.doc('delete question by ID')
+    @api.expect(parser)
     @Authenticate
     def delete(self, question_id):
         user_id = user_service.get_a_user(g.user.get('owner_id')).public_id
@@ -73,6 +78,7 @@ class Question(Resource):
 class QuestionAdjustment(Resource):
 
     @api.doc('change questions best_answer property to answer_id')
+    @api.expect(parser)
     @Authenticate
     def post(self, question_id, answer_id):
         user = user_service.get_a_user(g.user.get('owner_id')).public_id

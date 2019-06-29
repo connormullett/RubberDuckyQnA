@@ -1,5 +1,5 @@
 
-import uuid
+import uuid, re
 from datetime import datetime
 
 from rubber_ducky.src import db
@@ -9,6 +9,17 @@ from rubber_ducky.src.models.user import User
 def create_user(data):
 
     user = User.query.filter_by(email=data['email']).first()
+
+    if data.get('password') != data.get('confirm_password'):
+        return {'status': 'password mismatch'}, 400
+    
+    if not _check_password_requirements(data.get('password')):
+        return {
+            'status': 'Password must be between 6 and 20 characters, ' \
+            'contain atleast one uppercase and lowercase characters, ' \
+            'a number, and must have at least one special symbol'
+        }, 400
+
     if not user:
         new_user = User(
             public_id=uuid.uuid4(),
@@ -80,4 +91,12 @@ def generate_token(user):
             'message': 'Some error occurred. Please try again.'
         }
         return response_object, 401
+
+
+def _check_password_requirements(password):
+    pattern = re.compile('^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{6,20}$')
+    match = re.search(pattern, password)
+    
+    if match:
+        return True
     
