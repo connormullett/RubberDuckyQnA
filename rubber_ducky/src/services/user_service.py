@@ -1,9 +1,13 @@
 
-import uuid, re
+import uuid, re, os
+import boto3
 from datetime import datetime
 
+from flask import request, g
 from rubber_ducky.src import db
 from rubber_ducky.src.models.user import User
+
+from werkzeug.utils import secure_filename
 
 
 def create_user(data):
@@ -69,6 +73,27 @@ def delete_user(id):
     db.session.delete(user)
     db.session.commit()
     return None, 204
+
+
+def upload_profile_picture(image):
+    user = get_a_user(g.user.get('owner_id'))
+
+    bucket_url = os.environ.get('BUCKET_URL')
+    content_type = request.mimetype
+    client = boto3.client('s3',
+        endpoint_url=bucket_url,
+        aws_access_key_id=os.environ.get('ACCESS_KEY'),
+        aws_secret_access_key=os.environ.get('SECRET_KEY'))
+    
+    filename = user.username
+
+    client.put_object(Body=image,
+        Bucket=os.environ.get('BUCKET_NAME'),
+        Key=filename,
+        ContentType=content_type
+    )
+
+    return {'status': 'uploaded complete'}, 200
 
 
 def save_changes(data):

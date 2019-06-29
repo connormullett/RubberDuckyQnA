@@ -1,6 +1,7 @@
 
 import datetime
 import jwt
+import os
 
 from rubber_ducky.src.models.black_list import BlacklistToken
 from ..config import key
