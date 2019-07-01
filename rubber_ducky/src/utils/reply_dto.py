@@ -25,5 +25,5 @@ class ReplyCreateDto:
     api = ReplyDto.api
     reply = api.model('reply_create', {
         'content': fields.String(description='content of reply'),
-        'answer_id': fields.Id(description='answers ID')
+        'answer_id': fields.Integer(description='answers ID')
     })

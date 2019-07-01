@@ -1,5 +1,5 @@
 
-from flask import reqest, g
+from flask import request, g
 from flask_restplus import Resource
 
 from ..utils.reply_dto import ReplyDto, ReplyCreateDto, ReplyUpdateDto
