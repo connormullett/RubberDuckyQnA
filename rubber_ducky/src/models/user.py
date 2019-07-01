@@ -18,6 +18,7 @@ class User(db.Model):
     modified_at = db.Column(db.DateTime)
     admin = db.Column(db.Boolean, nullable=False, default=False)
     public_id = db.Column(db.String(100), unique=True)
+    has_profile_picture = db.Column(db.Boolean, default=False)
     username = db.Column(db.String(50), unique=True)
     password_hash = db.Column(db.String(100))
 

@@ -1,10 +1,12 @@
 
 import werkzeug
+import os
 
 from flask import request, g
 from flask_restplus import Resource, reqparse
 
-from ..utils.user_dto import UserDto, UserCreateDto, UserDetailDto, UserUpdateDto, UserMe
+from ..utils.user_dto import (UserDto, UserCreateDto, 
+    UserDetailDto, UserUpdateDto, UserMe)
 from ..services import user_service
 from ..utils.decorator import Authenticate
 
@@ -104,7 +106,14 @@ class ProfilePicture(Resource):
         image = request.files['file']
         return user_service.upload_profile_picture(image)
     
-    @api.doc('get profile picture')
-    @Authenticate
-    def get(self):
-        return {'status': 'not implemented'}, 200
+
+
+    
+@api.route('/image/<name>')
+@api.param('name', 'users unique name')
+class ProfilePictureRetrieve(Resource):
+
+    @api.doc('get profile picture by username')
+    def get(self, name):
+        # image = user_service.get_profile_picture(name)
+        return {'status': 'not implemented'}

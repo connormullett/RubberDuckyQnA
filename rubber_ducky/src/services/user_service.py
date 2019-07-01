@@ -93,8 +93,34 @@ def upload_profile_picture(image):
         ContentType=content_type
     )
 
+    user.has_profile_picture = True
+    db.session.commit()
+
     return {'status': 'uploaded complete'}, 200
 
+
+def get_profile_picture(name):
+    user = get_user_by_name(name)
+
+    if not user:
+        return {'status': 'user not found'}
+
+    if not user.has_profile_picture:
+        name = 'default.jpg'
+    
+    bucket_url = os.environ.get('BUCKET_URL')
+    content_type = request.mimetype
+    client = boto3.client('s3',
+        endpoint_url=bucket_url,
+        aws_access_key_id=os.environ.get('ACCESS_KEY'),
+        aws_secret_access_key=os.environ.get('SECRET_KEY'))
+    
+    response = client.get_object(
+        Bucket=os.environ['BUCKET_NAME'],
+        Key=name)
+
+    return {'body': response['Body']}, 200
+    
 
 def save_changes(data):
     db.session.add(data)
