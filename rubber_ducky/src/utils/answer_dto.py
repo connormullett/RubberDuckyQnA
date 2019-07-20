@@ -7,7 +7,7 @@ class AnswerDto:
     answer = api.model('answer', {
         'id': fields.Integer(required=True, description='unique id of answer'),
         'content': fields.String(required=True, description='body of the answer'),
-        'owner_id': fields.String(requirend=True, description='owners public id'),
+        'owner_id': fields.String(required=True, description='owners public id'),
         'created_at': fields.DateTime(required=True, description='when answer was created'),
         'question_id': fields.Integer(required=True, description='id of question')
     })
