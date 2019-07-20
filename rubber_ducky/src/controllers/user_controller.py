@@ -105,8 +105,6 @@ class ProfilePicture(Resource):
             return {'status': 'no file supplied'}, 400
         image = request.files['file']
         return user_service.upload_profile_picture(image)
-    
-
 
     
 @api.route('/image/<name>')
@@ -117,3 +115,4 @@ class ProfilePictureRetrieve(Resource):
     def get(self, name):
         # image = user_service.get_profile_picture(name)
         return {'status': 'not implemented'}
+

@@ -109,16 +109,21 @@ def get_profile_picture(name):
 
     if not user.has_profile_picture:
         name = 'default.jpg'
+    else:
+        name = f'{user.username}'
     
     bucket_url = os.environ.get('BUCKET_URL')
+    print(bucket_url)
     content_type = request.mimetype
     client = boto3.client('s3',
         endpoint_url=bucket_url,
         aws_access_key_id=os.environ.get('ACCESS_KEY'),
         aws_secret_access_key=os.environ.get('SECRET_KEY'))
+
+    print(os.environ['BUCKET_NAME'])
     
     response = client.get_object(
-        Bucket=os.environ['BUCKET_NAME'],
+        Bucket=f'{os.environ["BUCKET_NAME"]}/rubber-ducky-dev',
         Key=name)
 
     return {'body': response['Body']}, 200
