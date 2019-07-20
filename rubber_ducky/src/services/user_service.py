@@ -9,22 +9,31 @@ from rubber_ducky.src.models.user import User
 def create_user(data):
 
     user = User.query.filter_by(email=data['email']).first()
-    if not user:
-        new_user = User(
-            public_id=uuid.uuid4(),
-            email=data['email'],
-            username=data['username'],
-            password=data['password'],
-            registered_on=datetime.utcnow(),
-        )
-        save_changes(new_user)
-        return generate_token(new_user)
-    else:
+
+    if user:
         response_object = {
             'status': 'fail',
             'message': 'User already exists. Please Log in.',
         }
         return response_object, 409
+
+    username = data.get('username')
+
+    if ' ' in username:
+        return {
+            'status': 'fail',
+            'message': 'Username cannot have spaces'
+        }, 400
+
+    new_user = User(
+        public_id=uuid.uuid4(),
+        email=data.get('email'),
+        username=username,
+        password=data.get('password'),
+        registered_on=datetime.utcnow(),
+    )
+    save_changes(new_user)
+    return generate_token(new_user)
 
 
 def get_all_users():

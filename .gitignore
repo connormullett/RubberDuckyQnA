@@ -4,6 +4,7 @@ venv/
 .vscode/
 migrations/
 dev_env
+.dev_env
 
 
 # Elastic Beanstalk Files
