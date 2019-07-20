@@ -24,17 +24,6 @@ def create_user(data):
             'a number, and must have at least one special symbol'
         }, 400
 
-    if not user:
-        new_user = User(
-            public_id=uuid.uuid4(),
-            email=data['email'],
-            username=data['username'],
-            password=data['password'],
-            registered_on=datetime.utcnow(),
-        )
-        save_changes(new_user)
-        return generate_token(new_user)
-
     username = data.get('username')
 
     if ' ' in username:
