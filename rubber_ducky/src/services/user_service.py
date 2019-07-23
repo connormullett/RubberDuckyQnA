@@ -44,8 +44,19 @@ def create_user(data):
     return generate_token(new_user)
 
 
-def get_all_users():
+def get_all_users(args):
     return User.query.all()
+
+def get_paginated_users(args):
+    limit = args.get('limit')
+    start = args.get('start')                
+    end = args.get('end')
+    page_next = args.get('next')
+    page_prev = args.get('prev')
+
+    query = User.query.paginate(max_per_page=limit, page=start)
+    print(query.items)
+    return query
 
 
 def get_a_user(id):

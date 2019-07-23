@@ -4,11 +4,13 @@ import os
 
 from flask import request, g
 from flask_restplus import Resource, reqparse
+from flask_restplus import marshal
 
+from ..utils.decorator import Authenticate
 from ..utils.user_dto import (UserDto, UserCreateDto, 
     UserDetailDto, UserUpdateDto, UserMe)
+
 from ..services import user_service
-from ..utils.decorator import Authenticate
 
 api = UserDto.api
 user = UserDto.user
@@ -18,7 +20,13 @@ user_update = UserUpdateDto.user
 user_me = UserMe.user
 
 parser = api.parser()
-parser.add_argument('Authorization', location='headers')
+parser.add_argument('Authorization', location='headers', 
+    help="Authorization token")
+parser.add_argument('limit', type=int, help='how many objects to return')
+parser.add_argument('start', type=int, help='id to start query')
+parser.add_argument('end', type=int, help='when to end the query')
+parser.add_argument('next', type=int, help='next page')
+parser.add_argument('prev', type=int, help='previous page')
 
 
 @api.route('/')
@@ -32,11 +40,22 @@ class UserList(Resource):
         return user_service.create_user(data=data)
 
     @api.doc('get all users')
-    @api.marshal_list_with(user)
     @api.expect(parser)
     @Authenticate
     def get(self):
-        return user_service.get_all_users()
+        args = parser.parse_args()
+        if not args.get('limit'):
+            query = user_service.get_all_users()
+            return marshal(query, user), 200
+        else:
+            query = user_service.get_paginated_users(args)
+            print(query.items)
+            obj = {
+                'next_page': query.next_num,
+                'page': query.page,
+                'data': marshal(query.items, user)
+            }
+            return obj, 200
 
 
 @api.route('/me')
@@ -53,7 +72,7 @@ class UserMe(Resource):
         return user_service.update_user(user_id, data)
 
     @api.doc('get account associated with token')
-    @api.marshal_with(user_me)
+    @api.marshal_with(user_me, skip_none=True)
     @Authenticate
     def get(self):
         user_id = g.user.get('owner_id')
