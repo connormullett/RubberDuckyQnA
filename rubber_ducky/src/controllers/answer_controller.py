@@ -6,6 +6,8 @@ from ..utils.answer_dto import AnswerDto, AnswerCreateDto, AnswerUpdateDto, Answ
 from ..utils.decorator import Authenticate
 from ..services import question_service, answer_service, user_service
 
+from .user_controller import parser
+
 api = AnswerDto.api
 answer = AnswerDto.answer
 answer_create = AnswerCreateDto.answer
@@ -19,6 +21,7 @@ class AnswerList(Resource):
     @api.response(201, 'Answer Created')
     @api.doc('post answer')
     @api.expect(answer_create, validate=True)
+    @api.expect(parser)
     @Authenticate
     def post(self):
         data = request.json
@@ -41,6 +44,7 @@ class Answer(Resource):
 
     @api.doc('update answer')
     @api.expect(answer_update, validate=True)
+    @api.expect(parser)
     @api.marshal_with(answer_detail)
     @Authenticate
     def put(self, answer_id):
@@ -54,6 +58,7 @@ class Answer(Resource):
         return answer_service.update_answer(answer_id, data)
     
     @api.doc('delete answer')
+    @api.expect(parser)
     @Authenticate
     def delete(self, answer_id):
         user_id = user_service.get_a_user(g.user.get('owner_id')).public_id
@@ -72,6 +77,7 @@ class AnswerByQuestion(Resource):
 
     @api.doc('get questions by id')
     @api.marshal_list_with(answer)
+    @api.expect(parser)
     @Authenticate
     def get(self, question_id):
 

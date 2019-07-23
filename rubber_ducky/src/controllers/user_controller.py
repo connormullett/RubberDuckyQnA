@@ -1,8 +1,12 @@
 
-from flask import request, g
-from flask_restplus import Resource
+import werkzeug
+import os
 
-from ..utils.user_dto import UserDto, UserCreateDto, UserDetailDto, UserUpdateDto, UserMe
+from flask import request, g
+from flask_restplus import Resource, reqparse
+
+from ..utils.user_dto import (UserDto, UserCreateDto, 
+    UserDetailDto, UserUpdateDto, UserMe)
 from ..services import user_service
 from ..utils.decorator import Authenticate
 
@@ -89,3 +93,26 @@ class UserByPublicId(Resource):
         if not response:
             return {'status': 'user not found'}, 404
         return response
+
+
+@api.route('/image')
+class ProfilePicture(Resource):
+
+    @api.doc('upload an image as your profile pic')
+    @Authenticate
+    def post(self):
+        if 'file' not in request.files:
+            return {'status': 'no file supplied'}, 400
+        image = request.files['file']
+        return user_service.upload_profile_picture(image)
+
+    
+@api.route('/image/<name>')
+@api.param('name', 'users unique name')
+class ProfilePictureRetrieve(Resource):
+
+    @api.doc('get profile picture by username')
+    def get(self, name):
+        # image = user_service.get_profile_picture(name)
+        return {'status': 'not implemented'}
+
