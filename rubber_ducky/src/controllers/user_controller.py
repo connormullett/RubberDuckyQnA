@@ -133,7 +133,8 @@ class ProfilePictureRetrieve(Resource):
 
     @api.doc('get profile picture by username')
     def get(self, name):
-        image = user_service.get_profile_picture(name)
-        print(image)
-        return {'image': image[0]['body'].read()}
+        # image = user_service.get_profile_picture(name)
+        # print(image)
+        # return image[0]['body'].read()
+        return {'status': 'not implemented'}, 403
 
