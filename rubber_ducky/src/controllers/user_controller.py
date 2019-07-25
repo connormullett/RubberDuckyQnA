@@ -48,6 +48,7 @@ class UserList(Resource):
             query = user_service.get_all_users()
             return marshal(query, user), 200
         else:
+            return {'status': 'Not implemented'}, 403
             query = user_service.get_paginated_users(args)
             print(query.items)
             obj = {
@@ -132,6 +133,7 @@ class ProfilePictureRetrieve(Resource):
 
     @api.doc('get profile picture by username')
     def get(self, name):
-        # image = user_service.get_profile_picture(name)
-        return {'status': 'not implemented'}
+        image = user_service.get_profile_picture(name)
+        print(image)
+        return {'image': image[0]['body'].read()}
 

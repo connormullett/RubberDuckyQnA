@@ -96,7 +96,7 @@ def upload_profile_picture(image):
     client = boto3.client('s3',
         endpoint_url=bucket_url,
         aws_access_key_id=os.environ.get('ACCESS_KEY'),
-        aws_secret_access_key=os.environ.get('SECRET_KEY'))
+        aws_secret_access_key=os.environ['AWS_SECRET_KEY'])
     
     filename = user.username
 
@@ -121,7 +121,7 @@ def get_profile_picture(name):
     if not user.has_profile_picture:
         name = 'default.jpg'
     else:
-        name = f'{user.username}'
+        name = user.username
     
     bucket_url = os.environ.get('BUCKET_URL')
     print(bucket_url)
@@ -129,13 +129,14 @@ def get_profile_picture(name):
     client = boto3.client('s3',
         endpoint_url=bucket_url,
         aws_access_key_id=os.environ.get('ACCESS_KEY'),
-        aws_secret_access_key=os.environ.get('SECRET_KEY'))
+        aws_secret_access_key=os.environ.get('AWS_SECRET_KEY'))
 
-    print(os.environ['BUCKET_NAME'])
+    key = name
+    print(key)
     
     response = client.get_object(
-        Bucket=f'{os.environ["BUCKET_NAME"]}/rubber-ducky-dev',
-        Key=name)
+        Bucket=os.environ['BUCKET_NAME'],
+        Key=key)
 
     return {'body': response['Body']}, 200
     
