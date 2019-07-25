@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 
 import os
 
@@ -10,5 +9,5 @@ application.register_blueprint(user_api)
 
 application.app_context().push()
 
-if __name__ == '__main__':
-    application.run()
+application.run()
+
