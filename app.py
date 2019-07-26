@@ -9,5 +9,3 @@ application.register_blueprint(user_api)
 
 application.app_context().push()
 
-application.run()
-
