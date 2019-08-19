@@ -1,6 +1,8 @@
 
 from flask_restplus import Namespace, fields
 
+from .answer_dto import AnswerDto
+
 
 class QuestionDto:  # List Item
     api = Namespace('question', description='the \'forum\' entity of the app')
@@ -8,7 +10,7 @@ class QuestionDto:  # List Item
         'id': fields.Integer(required=True, description='unique id of post'),
         'title': fields.String(required=True, description='title of post'),
         'owner_id': fields.String(required=True, description='owners id'),
-        'created_at': fields.DateTime(required=True, description='when question was created')
+        'created_at': fields.DateTime(required=True, description='when question was created'),
     })
 
 
@@ -38,5 +40,5 @@ class QuestionDetail:
         'best_answer': fields.Integer(description='only done when changing best answer'),
         'created_at': fields.DateTime(description='when question was asked'),
         'modified_at': fields.DateTime(description='when question was last modified'),
-        # Answers DTO here?
+        'answers': fields.List(fields.Nested(AnswerDto.answer))
     })

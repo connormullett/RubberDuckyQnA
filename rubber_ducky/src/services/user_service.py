@@ -132,7 +132,6 @@ def get_profile_picture(name):
         aws_secret_access_key=os.environ.get('AWS_SECRET_KEY'))
 
     key = name
-    print(key)
     
     response = client.get_object(
         Bucket=os.environ['BUCKET_NAME'],
